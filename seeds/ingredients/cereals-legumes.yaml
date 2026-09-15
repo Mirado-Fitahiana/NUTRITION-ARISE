@@ -1,0 +1,66 @@
+# Céréales et légumineuses.
+#
+# ⚠ FICHIER DE DÉMARRAGE — gabarit de format, pas un catalogue validé.
+# Chaque valeur nutritionnelle doit être confirmée sur l'entrée réelle de la
+# table de composition citée, et le bloc `allergens` signé par le nutritionniste,
+# avant toute publication. Cf. seeds/README.md.
+
+- slug: riz-blanc-cru
+  name: Riz blanc (cru)
+  category: cereals
+  reference_unit: g
+  nutrition:
+    source: "CIQUAL — riz blanc cru (référence exacte à confirmer)"
+    kcal_100: 349
+    protein_100: 7.1
+    carbs_100: 77.9
+    fat_100: 0.9
+    fiber_100: 1.4
+  allergens:
+    values: []
+    # Non signé : bloque volontairement la publication des plats qui l'utilisent.
+  restriction_flags: [vegetarian, vegan]
+  locally_available: true
+  density_g_per_ml: 0.85
+  aliases:
+    - { alias: Vary, language: mg }
+  unit_conversions:
+    # La kapoaka est la mesure de riz courante à Madagascar. Le facteur doit
+    # être PESÉ, jamais estimé : il varie avec le contenant utilisé.
+    - { from_unit: kapoaka, to_unit: g, factor: 285, source: "à mesurer — valeur provisoire" }
+
+- slug: haricot-blanc-sec
+  name: Haricot blanc (sec)
+  category: legumes
+  reference_unit: g
+  nutrition:
+    source: "FAO/INFOODS Afrique de l'Ouest — haricot sec (à confirmer)"
+    kcal_100: 333
+    protein_100: 21.4
+    carbs_100: 54.2
+    fat_100: 1.5
+    fiber_100: 15.2
+  allergens:
+    values: []
+  restriction_flags: [vegetarian, vegan]
+  locally_available: true
+  aliases:
+    - { alias: Tsaramaso, language: mg }
+
+- slug: manioc-frais
+  name: Manioc frais
+  category: cereals
+  reference_unit: g
+  nutrition:
+    source: "FAO/INFOODS Afrique de l'Ouest — manioc cru (à confirmer)"
+    kcal_100: 160
+    protein_100: 1.4
+    carbs_100: 38.1
+    fat_100: 0.3
+    fiber_100: 1.8
+  allergens:
+    values: []
+  restriction_flags: [vegetarian, vegan]
+  locally_available: true
+  aliases:
+    - { alias: Mangahazo, language: mg }

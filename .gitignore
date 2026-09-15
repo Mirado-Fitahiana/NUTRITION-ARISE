@@ -1,2 +1,17 @@
-*.pyc
+# Environnement
 .env
+
+# Clés de développement — la clé privée ne doit jamais être versionnée (D-03)
+keys/*.pem
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+
+# Sauvegardes de migration d'encodage
+*.utf16.bak

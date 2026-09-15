@@ -1,0 +1,71 @@
+# Déjeuners et dîners.
+#
+# ⚠ FICHIER DE DÉMARRAGE — gabarit de format. Cf. seeds/README.md.
+#
+# Ces plats demandent `publish: true`. Le chargeur les refusera tant que les
+# allergènes de leurs ingrédients ne sont pas signés : c'est le comportement
+# attendu de FN-003, pas une erreur de configuration.
+
+- slug: vary-amin-anana
+  name: Vary amin'anana
+  description: >-
+    Riz cuit avec des brèdes, plat quotidien malgache. Économique, rassasiant,
+    et modulable selon les brèdes de saison.
+  meal_types: [lunch, dinner]
+  origin: Madagascar
+  prep_time_min: 10
+  cook_time_min: 30
+  difficulty: easy
+  servings: 4
+  estimated_cost: 6000
+  cost_class: economical
+  currency: MGA
+  ingredients:
+    - { ingredient: riz-blanc-cru, quantity: 300, unit: g }
+    - { ingredient: brede-mafana, quantity: 250, unit: g }
+    - { ingredient: oignon, quantity: 80, unit: g }
+    - { ingredient: huile-arachide, quantity: 20, unit: ml }
+  steps:
+    - Rincer le riz jusqu'à ce que l'eau soit claire.
+    - Faire revenir l'oignon émincé dans l'huile.
+    - Ajouter le riz et l'eau, porter à ébullition.
+    - Incorporer les brèdes lavées et laisser cuire à couvert.
+  tags: [local, family_meal, economical]
+  compatible_goals: [weight_maintenance, balanced_diet]
+  author: "admin:a-remplacer"
+  validation:
+    validated_by: "nutritionist:a-remplacer"
+    validated_at: 2026-08-27
+    publish: true
+
+- slug: ro-mazava
+  name: Ro mazava
+  description: >-
+    Bouillon clair de zébu aux brèdes, servi avec du riz blanc.
+  meal_types: [lunch, dinner]
+  origin: Madagascar
+  prep_time_min: 15
+  cook_time_min: 45
+  difficulty: medium
+  servings: 4
+  estimated_cost: 18000
+  cost_class: medium
+  currency: MGA
+  ingredients:
+    - { ingredient: viande-zebu-maigre, quantity: 500, unit: g }
+    - { ingredient: brede-mafana, quantity: 1, unit: botte, note: "pesée locale requise" }
+    - { ingredient: tomate, quantity: 200, unit: g }
+    - { ingredient: oignon, quantity: 100, unit: g }
+    - { ingredient: riz-blanc-cru, quantity: 1, unit: kapoaka }
+  steps:
+    - Faire revenir la viande coupée en morceaux avec l'oignon.
+    - Ajouter les tomates puis couvrir d'eau et laisser mijoter.
+    - Ajouter les brèdes en fin de cuisson.
+    - Servir avec le riz blanc cuit à part.
+  tags: [local, family_meal]
+  compatible_goals: [muscle_gain, weight_maintenance]
+  author: "admin:a-remplacer"
+  validation:
+    validated_by: "nutritionist:a-remplacer"
+    validated_at: 2026-08-27
+    publish: true

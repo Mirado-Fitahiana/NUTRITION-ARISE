@@ -1,0 +1,94 @@
+# Légumes, protéines animales, matières grasses.
+#
+# ⚠ FICHIER DE DÉMARRAGE — gabarit de format. Cf. seeds/README.md.
+
+- slug: brede-mafana
+  name: Brède mafana
+  category: vegetables
+  reference_unit: g
+  nutrition:
+    source: "FAO/INFOODS Afrique de l'Ouest — feuilles vertes (à confirmer)"
+    kcal_100: 32
+    protein_100: 3.1
+    carbs_100: 4.4
+    fat_100: 0.5
+    fiber_100: 2.9
+  allergens:
+    values: []
+  restriction_flags: [vegetarian, vegan]
+  locally_available: true
+  seasonality: [10, 11, 12, 1, 2, 3]
+  unit_conversions:
+    # Une « botte » n'a pas de poids universel : elle doit être pesée localement.
+    - { from_unit: botte, to_unit: g, factor: 250, source: "à mesurer — valeur provisoire" }
+
+- slug: tomate
+  name: Tomate
+  category: vegetables
+  reference_unit: g
+  nutrition:
+    source: "CIQUAL — tomate crue (à confirmer)"
+    kcal_100: 18
+    protein_100: 0.8
+    carbs_100: 2.9
+    fat_100: 0.3
+    fiber_100: 1.2
+  allergens:
+    values: []
+  restriction_flags: [vegetarian, vegan]
+  locally_available: true
+  unit_conversions:
+    - { from_unit: tas, to_unit: g, factor: 400, source: "à mesurer — valeur provisoire" }
+
+- slug: oignon
+  name: Oignon
+  category: vegetables
+  reference_unit: g
+  nutrition:
+    source: "CIQUAL — oignon cru (à confirmer)"
+    kcal_100: 38
+    protein_100: 1.2
+    carbs_100: 6.4
+    fat_100: 0.2
+    fiber_100: 1.8
+  allergens:
+    values: []
+  restriction_flags: [vegetarian, vegan]
+  locally_available: true
+
+- slug: viande-zebu-maigre
+  name: Viande de zébu (maigre, crue)
+  category: meats
+  reference_unit: g
+  nutrition:
+    source: "FAO/INFOODS Afrique de l'Ouest — viande bovine maigre (à confirmer)"
+    kcal_100: 130
+    protein_100: 21.0
+    carbs_100: 0.0
+    fat_100: 5.0
+    fiber_100: 0.0
+  allergens:
+    values: []
+  restriction_flags: []
+  locally_available: true
+  aliases:
+    - { alias: Hena omby, language: mg }
+
+- slug: huile-arachide
+  name: Huile d'arachide
+  category: oils
+  reference_unit: ml
+  nutrition:
+    source: "CIQUAL — huile d'arachide (à confirmer)"
+    kcal_100: 828
+    protein_100: 0.0
+    carbs_100: 0.0
+    fat_100: 92.0
+    fiber_100: 0.0
+  allergens:
+    # Déclaré par précaution : le raffinage n'élimine pas le risque de manière
+    # garantie, et l'arbitrage revient au nutritionniste, pas au développeur.
+    values: [peanut]
+  restriction_flags: [vegetarian, vegan]
+  locally_available: true
+  density_g_per_ml: 0.915

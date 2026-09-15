@@ -1,0 +1,6 @@
+# Outillage de développement et de test.
+# Installation : pip install -r requirements.txt -r requirements-dev.txt
+-r requirements.txt
+
+pytest==8.4.2
+pytest-asyncio==1.2.0

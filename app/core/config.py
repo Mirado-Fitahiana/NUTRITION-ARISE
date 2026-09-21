@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     # --- Application ---
     environment: Literal["development", "staging", "production"] = "development"
     log_level: str = "INFO"
+    #: Adresse d'écoute de `run.py`. `127.0.0.1` par défaut : la console et la
+    #: plateforme de pilotage reposent sur un jeton de développement que
+    #: n'importe qui peut émettre — on ne l'expose pas au réseau local.
+    #: `HOST=0.0.0.0` pour tester depuis un téléphone physique.
+    host: str = "127.0.0.1"
+    port: int = 8000
 
     # --- Base de données ---
     database_host: str = "localhost"
@@ -51,6 +57,14 @@ class Settings(BaseSettings):
 
     # --- Observabilité ---
     sentry_dsn: str = ""
+
+    # --- Collecte (lot 4, conditionnel à SPIKE-01) ---
+    #: Coordonnées annoncées dans le User-Agent du robot (FN-013). Laissées
+    #: vides, le critère « contact identifiable » s'affiche comme manquant :
+    #: il n'est jamais inventé.
+    scraping_contact: str = ""
+    #: Instantanés HTML des pages relevées. Contenu de sites tiers : ignoré par Git.
+    scraping_snapshot_dir: str = "var/collecte/instantanes"
 
     @computed_field
     @property

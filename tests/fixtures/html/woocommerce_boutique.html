@@ -1,0 +1,63 @@
+<!--
+  Reconstitution du balisage d'une page boutique WooCommerce. Ce n'est PAS une
+  capture d'abcie.org : les sélecteurs sont ceux que le relevé SPIKE-01 a
+  confirmés (li.product, woocommerce-Price-amount), les produits et les prix sont
+  inventés. Les trois cas délicats du connecteur y figurent : promotion,
+  produit variable (fourchette), prix « sur demande ».
+
+  À remplacer par un instantané réel, réduit, dès la première collecte à blanc.
+-->
+<!doctype html>
+<html lang="fr">
+<body>
+<ul class="products columns-4">
+
+  <li class="product type-product post-11 status-publish first instock product_cat-cereales">
+    <a href="https://www.abcie.org/produit/riz-local-5kg/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+      <img src="/wp-content/uploads/riz.jpg" alt="">
+      <h2 class="woocommerce-loop-product__title">Riz local 5 kg</h2>
+      <span class="price"><span class="woocommerce-Price-amount amount"><bdi>23&nbsp;400&nbsp;<span class="woocommerce-Price-currencySymbol">Ar</span></bdi></span></span>
+    </a>
+  </li>
+
+  <li class="product type-product post-12 status-publish instock sale">
+    <a href="https://www.abcie.org/produit/huile-vegetale-1l/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+      <h2 class="woocommerce-loop-product__title">Huile végétale 1 L</h2>
+      <span class="onsale">Promo !</span>
+      <span class="price">
+        <del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>9&nbsp;000&nbsp;<span class="woocommerce-Price-currencySymbol">Ar</span></bdi></span></del>
+        <ins><span class="woocommerce-Price-amount amount"><bdi>8&nbsp;400&nbsp;<span class="woocommerce-Price-currencySymbol">Ar</span></bdi></span></ins>
+      </span>
+    </a>
+  </li>
+
+  <li class="product type-product post-13 status-publish outofstock">
+    <a href="/produit/lentilles-corail/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+      <h2 class="woocommerce-loop-product__title">Lentilles corail 500g</h2>
+      <span class="price"><span class="woocommerce-Price-amount amount"><bdi>3&nbsp;200&nbsp;<span class="woocommerce-Price-currencySymbol">Ar</span></bdi></span></span>
+    </a>
+  </li>
+
+  <li class="product type-product post-14 status-publish instock product-type-variable">
+    <a href="/produit/haricots-rouges-vrac/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+      <h2 class="woocommerce-loop-product__title">Haricots rouges (vrac)</h2>
+      <span class="price"><span class="woocommerce-Price-amount amount"><bdi>8&nbsp;400&nbsp;<span class="woocommerce-Price-currencySymbol">Ar</span></bdi></span> &ndash; <span class="woocommerce-Price-amount amount"><bdi>23&nbsp;400&nbsp;<span class="woocommerce-Price-currencySymbol">Ar</span></bdi></span></span>
+    </a>
+  </li>
+
+  <li class="product type-product post-15 status-publish instock">
+    <a href="/produit/panier-solidaire/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+      <h2 class="woocommerce-loop-product__title">Panier solidaire</h2>
+    </a>
+  </li>
+
+  <li class="product type-product post-16 status-publish instock last">
+    <a href="/produit/epices-du-marche/" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+      <h2 class="woocommerce-loop-product__title">Épices du marché</h2>
+      <span class="price">Prix sur demande</span>
+    </a>
+  </li>
+
+</ul>
+</body>
+</html>

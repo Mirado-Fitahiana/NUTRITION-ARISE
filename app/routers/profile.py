@@ -26,7 +26,14 @@ from app.core.auth import Principal, current_user
 from app.core.database import get_session
 from app.core.errors import ErrorCode, NutritionError
 from app.models.catalog import Ingredient
-from app.models.enums import AuditResult, IngredientStatus, MealPlanStatus
+from app.models.enums import (
+    ActivityLevel,
+    AuditResult,
+    Goal,
+    IngredientStatus,
+    MealPlanStatus,
+    Sex,
+)
 from app.models.planning import MealPlan
 from app.models.profile import (
     DietaryPreference,
@@ -35,6 +42,7 @@ from app.models.profile import (
     FavoriteIngredient,
     NutritionProfile,
     NutritionProfileHistory,
+    NutritionTarget,
     UserAllergy,
 )
 from app.schemas.profile import (
@@ -48,8 +56,9 @@ from app.schemas.profile import (
     RestrictionOut,
     RestrictionsIn,
     RestrictionsOut,
+    TargetsOut,
 )
-from app.services import audit
+from app.services import audit, energie
 from app.services.audit import AuditAction
 from app.services.restrictions import IngredientIndex, normalize
 
@@ -150,6 +159,65 @@ async def read_profile(
     return _to_out(await _require(session, principal.external_user_id))
 
 
+def _recalculer_besoins(session: AsyncSession, profile: NutritionProfile) -> None:
+    """FN-038 — recalcule et **historise** les besoins énergétiques.
+
+    Une nouvelle ligne est ajoutée plutôt que l'ancienne modifiée : les cibles
+    passées doivent rester interprétables, y compris après un changement de
+    formule (`formula_version`).
+    """
+    besoins = energie.calculer(
+        poids_kg=Decimal(str(profile.weight_kg)),
+        taille_cm=Decimal(str(profile.height_cm)),
+        birth_date=profile.birth_date,
+        sexe=Sex(profile.sex),
+        niveau_activite=ActivityLevel(profile.activity_level),
+        objectif=Goal(profile.goal),
+    )
+    session.add(
+        NutritionTarget(
+            profile_id=profile.id,
+            bmr=besoins.bmr,
+            tdee=besoins.tdee,
+            kcal_target=besoins.kcal_target,
+            protein_g=besoins.protein_g,
+            carbs_g=besoins.carbs_g,
+            fat_g=besoins.fat_g,
+            safety_floor_applied=besoins.safety_floor_applied,
+            formula=besoins.formula,
+            formula_version=besoins.formula_version,
+            computed_at=datetime.now(UTC),
+        )
+    )
+
+
+@router.get(
+    "/targets",
+    response_model=TargetsOut,
+    summary="FN-038 — ses besoins énergétiques calculés",
+)
+async def read_targets(
+    principal: Principal = Depends(current_user),
+    session: AsyncSession = Depends(get_session),
+) -> TargetsOut:
+    """Le calcul le plus récent. Les précédents restent en base : ils rendent
+    l'historique des programmes interprétable."""
+    profile = await _require(session, principal.external_user_id)
+    cible = await session.scalar(
+        select(NutritionTarget)
+        .where(NutritionTarget.profile_id == profile.id)
+        .order_by(NutritionTarget.computed_at.desc())
+        .limit(1)
+    )
+    if cible is None:
+        raise NutritionError(
+            ErrorCode.PROFILE_INCOMPLETE,
+            message="Vos besoins énergétiques n'ont pas encore été calculés.",
+            http_status=status.HTTP_409_CONFLICT,
+        )
+    return TargetsOut.model_validate(cible)
+
+
 @router.post(
     "/profile",
     response_model=ProfileOut,
@@ -177,6 +245,7 @@ async def create_profile(
 
     session.add(profile)
     await session.flush()
+    _recalculer_besoins(session, profile)
 
     await audit.record(
         session,
@@ -225,6 +294,10 @@ async def update_profile(
         )
         if NUTRITION_RELEVANT & set(changed):
             obsolete = await _mark_plans_obsolete(session, profile.id)
+            # FN-038 — « le calcul est recalculé à chaque modification du
+            # profil ». Une cible périmée est pire qu'une cible absente : elle
+            # a l'air valide.
+            _recalculer_besoins(session, profile)
 
         await audit.record(
             session,

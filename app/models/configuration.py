@@ -32,9 +32,15 @@ class ScoringWeightSet(Base, TimestampMixin):
     id: Mapped[uuid.UUID] = uuid_pk()
     version: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
     description: Mapped[str | None] = mapped_column(Text)
-    #: Termes de la formule FN-020 : `w_objectif`, `w_preference`, `w_variete`,
-    #: `w_cout`, `w_local`, `w_facilite`, `w_reemploi`, `w_historique`,
-    #: `p_repetition`, `p_refus`, `p_prix_ancien` (lot 3), `w_semantique` (lot 4).
+    #: Poids **réellement lus** par `app.services.recommandation.scorer` :
+    #: `nutrition`, `cost`, `preference`, `variety`, `favorite`. Le registre
+    #: `app.services.reglages` refuse toute autre clé.
+    #:
+    #: La formule FN-020 prévoit d'autres termes (`w_local`, `w_facilite`,
+    #: `w_reemploi`, `w_historique`, `p_repetition`, `p_refus`, `p_prix_ancien`
+    #: au lot 3, `w_semantique` au lot 4). Tant que `scorer` ne les calcule pas,
+    #: les enregistrer ici n'aurait **aucun effet** : ils sont listés comme
+    #: « prévus, non lus » par la plateforme de pilotage, pas acceptés.
     weights: Mapped[dict] = mapped_column(JSONB, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 

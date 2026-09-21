@@ -1,0 +1,17 @@
+{% extends "pilotage/base.html" %}
+
+{% block contenu %}
+<nav class="onglets" id="onglets" role="tablist" aria-label="Réglages">
+  <button type="button" class="onglets__onglet" role="tab" data-onglet="parametres">Paramètres métier</button>
+  <button type="button" class="onglets__onglet" role="tab" data-onglet="poids">Poids du score</button>
+  <button type="button" class="onglets__onglet" role="tab" data-onglet="environnement">Environnement</button>
+</nav>
+
+<div class="pile" data-panneau="parametres" id="parametres"></div>
+<div class="pile" data-panneau="poids" id="poids" hidden></div>
+<div class="pile" data-panneau="environnement" id="environnement" hidden></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/pilotage/static/reglages.js?v={{ v }}"></script>
+{% endblock %}

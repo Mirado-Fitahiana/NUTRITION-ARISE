@@ -22,8 +22,9 @@ from app.core.config import settings
 def main() -> None:
     config = uvicorn.Config(
         "app.main:app",
-        host="0.0.0.0",
-        port=8000,
+        # 127.0.0.1 par défaut (`HOST` dans `.env`) : voir `Settings.host`.
+        host=settings.host,
+        port=settings.port,
         reload=not settings.is_production,
         log_level=settings.log_level.lower(),
     )

@@ -1,0 +1,610 @@
+# Catalogue FICTIF du laboratoire de recommandation (plan, §8.3 et décision 7).
+#
+# ⚠ Données inventées. Valeurs nutritionnelles, allergènes et coûts ne sont ni
+# sourcés ni validés par un nutritionniste. Ce fichier sert à voir fonctionner
+# la chaîne filtrage → score → composition → validation avant que le catalogue
+# réel existe (sprint 03). Il n'est jamais chargé en base, jamais servi à un
+# utilisateur, et `laboratoire.charger_catalogue_fictif` refuse tout fichier
+# qui ne porte pas `fictif: true`.
+#
+# Composition délibérée, pour que les cas d'évaluation aient quelque chose à
+# éprouver : 42 plats, dont 28 compatibles végétarien (vivier suffisant) et 19
+# compatibles végan (vivier insuffisant → CATALOG_TOO_SMALL).
+
+fictif: true
+titre: Catalogue fictif du laboratoire
+avertissement: >-
+  Données inventées : ni sourcées, ni validées. Ne jamais les interpréter comme
+  la qualité du catalogue réel.
+
+plats:
+  # --- Petits-déjeuners -------------------------------------------------------
+  - slug: mofo-ravina-the
+    nom: Mofo ravina et thé
+    types: [breakfast]
+    kcal: 420
+    proteines_g: 9
+    glucides_g: 62
+    lipides_g: 14
+    allergenes: [gluten]
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free]
+    objectifs: [balanced_diet, weight_maintenance]
+    ingredients: [farine-ble, feuilles-brede, the]
+    proteines: []
+    cout: 1500
+
+  - slug: vary-sosoa-atody
+    nom: Vary sosoa et œuf dur
+    types: [breakfast]
+    kcal: 460
+    proteines_g: 18
+    glucides_g: 70
+    lipides_g: 11
+    allergenes: [egg]
+    restrictions: [vegetarian, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [balanced_diet, weight_maintenance, muscle_gain]
+    ingredients: [riz-blanc, oeuf]
+    proteines: [oeuf]
+    cout: 1800
+
+  - slug: koba-akondro
+    nom: Koba akondro
+    types: [breakfast]
+    kcal: 510
+    proteines_g: 12
+    glucides_g: 78
+    lipides_g: 16
+    allergenes: [peanut]
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_gain, balanced_diet]
+    ingredients: [farine-riz, arachide, banane]
+    proteines: [arachide]
+    cout: 1200
+
+  - slug: yaourt-mangue-avoine
+    nom: Yaourt, mangue et flocons d'avoine
+    types: [breakfast]
+    kcal: 390
+    proteines_g: 16
+    glucides_g: 58
+    lipides_g: 9
+    allergenes: [milk, gluten]
+    restrictions: [vegetarian, no_pork, no_alcohol]
+    objectifs: [weight_loss, balanced_diet]
+    ingredients: [yaourt, mangue, avoine]
+    proteines: [yaourt]
+    cout: 2500
+
+  - slug: pain-pate-arachide
+    nom: Pain et pâte d'arachide
+    types: [breakfast]
+    kcal: 540
+    proteines_g: 17
+    glucides_g: 60
+    lipides_g: 24
+    allergenes: [gluten, peanut]
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free]
+    objectifs: [weight_gain, muscle_gain]
+    ingredients: [pain, pate-arachide]
+    proteines: [arachide]
+    cout: 1600
+
+  - slug: omelette-tomate-pain
+    nom: Omelette à la tomate et pain
+    types: [breakfast]
+    kcal: 480
+    proteines_g: 22
+    glucides_g: 45
+    lipides_g: 22
+    allergenes: [egg, gluten]
+    restrictions: [vegetarian, no_pork, no_alcohol, lactose_free]
+    objectifs: [muscle_gain, weight_maintenance]
+    ingredients: [oeuf, tomate, pain]
+    proteines: [oeuf]
+    cout: 2200
+
+  - slug: bouillie-mais-lait
+    nom: Bouillie de maïs au lait
+    types: [breakfast]
+    kcal: 430
+    proteines_g: 13
+    glucides_g: 70
+    lipides_g: 10
+    allergenes: [milk]
+    restrictions: [vegetarian, no_pork, no_alcohol, gluten_free]
+    objectifs: [balanced_diet, habit_improvement]
+    ingredients: [mais, lait]
+    proteines: [lait]
+    cout: 1300
+
+  - slug: patate-douce-cafe
+    nom: Patate douce vapeur et café
+    types: [breakfast]
+    kcal: 350
+    proteines_g: 5
+    glucides_g: 80
+    lipides_g: 1
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss, habit_improvement]
+    ingredients: [patate-douce, cafe]
+    proteines: []
+    cout: 900
+
+  - slug: manioc-coco
+    nom: Manioc au lait de coco
+    types: [breakfast]
+    kcal: 470
+    proteines_g: 4
+    glucides_g: 75
+    lipides_g: 18
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_gain, balanced_diet]
+    ingredients: [manioc, lait-coco]
+    proteines: []
+    cout: 1100
+
+  # --- Collations -------------------------------------------------------------
+  - slug: banane
+    nom: Banane
+    types: [snack]
+    kcal: 105
+    proteines_g: 1
+    glucides_g: 27
+    lipides_g: 0
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss, balanced_diet, habit_improvement]
+    ingredients: [banane]
+    proteines: []
+    cout: 300
+
+  - slug: mangue
+    nom: Mangue en tranches
+    types: [snack]
+    kcal: 100
+    proteines_g: 1
+    glucides_g: 25
+    lipides_g: 0
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss, balanced_diet]
+    ingredients: [mangue]
+    proteines: []
+    cout: 400
+
+  - slug: arachides-grillees
+    nom: Arachides grillées (petite portion)
+    types: [snack]
+    kcal: 160
+    proteines_g: 7
+    glucides_g: 5
+    lipides_g: 14
+    allergenes: [peanut]
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_gain, muscle_gain]
+    ingredients: [arachide]
+    proteines: [arachide]
+    cout: 400
+
+  - slug: yaourt-nature
+    nom: Yaourt nature
+    types: [snack]
+    kcal: 90
+    proteines_g: 5
+    glucides_g: 7
+    lipides_g: 4
+    allergenes: [milk]
+    restrictions: [vegetarian, no_pork, no_alcohol, gluten_free]
+    objectifs: [weight_loss, muscle_gain]
+    ingredients: [yaourt]
+    proteines: [yaourt]
+    cout: 700
+
+  - slug: mofo-mokary
+    nom: Mofo mokary
+    types: [snack]
+    kcal: 130
+    proteines_g: 2
+    glucides_g: 24
+    lipides_g: 3
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [balanced_diet]
+    ingredients: [farine-riz, lait-coco]
+    proteines: []
+    cout: 300
+
+  - slug: ananas
+    nom: Ananas frais
+    types: [snack]
+    kcal: 80
+    proteines_g: 1
+    glucides_g: 20
+    lipides_g: 0
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss]
+    ingredients: [ananas]
+    proteines: []
+    cout: 350
+
+  - slug: voanjobory-bouilli
+    nom: Voanjobory bouilli
+    types: [snack]
+    kcal: 120
+    proteines_g: 8
+    glucides_g: 20
+    lipides_g: 1
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [muscle_gain, balanced_diet]
+    ingredients: [voanjobory]
+    proteines: [voanjobory]
+    cout: 350
+
+  - slug: biscuit-sesame
+    nom: Biscuit au sésame
+    types: [snack]
+    kcal: 140
+    proteines_g: 3
+    glucides_g: 18
+    lipides_g: 6
+    allergenes: [sesame, gluten]
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free]
+    objectifs: []
+    ingredients: [farine-ble, sesame]
+    proteines: []
+    cout: 500
+
+  - slug: lait-caille
+    nom: Lait caillé
+    types: [snack]
+    kcal: 110
+    proteines_g: 6
+    glucides_g: 8
+    lipides_g: 6
+    allergenes: [milk]
+    restrictions: [vegetarian, no_pork, no_alcohol, gluten_free]
+    objectifs: [muscle_gain]
+    ingredients: [lait]
+    proteines: [lait]
+    cout: 600
+
+  # --- Déjeuners et dîners ----------------------------------------------------
+  - slug: romazava-boeuf
+    nom: Romazava au bœuf et riz
+    types: [lunch, dinner]
+    kcal: 690
+    proteines_g: 38
+    glucides_g: 85
+    lipides_g: 18
+    allergenes: []
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [muscle_gain, weight_maintenance, balanced_diet]
+    ingredients: [riz-blanc, boeuf, brede-mafana]
+    proteines: [boeuf]
+    cout: 6500
+
+  - slug: ravitoto-porc
+    nom: Ravitoto sy henakisoa et riz
+    types: [lunch, dinner]
+    kcal: 780
+    proteines_g: 32
+    glucides_g: 82
+    lipides_g: 34
+    allergenes: []
+    restrictions: [no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_gain]
+    ingredients: [riz-blanc, porc, feuilles-manioc]
+    proteines: [porc]
+    cout: 6000
+
+  - slug: akoho-voanio
+    nom: Poulet au coco et riz
+    types: [lunch, dinner]
+    kcal: 720
+    proteines_g: 40
+    glucides_g: 80
+    lipides_g: 26
+    allergenes: []
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [muscle_gain, weight_gain]
+    ingredients: [riz-blanc, poulet, lait-coco]
+    proteines: [poulet]
+    cout: 7000
+
+  - slug: trondro-voatabia
+    nom: Poisson à la tomate et riz
+    types: [lunch, dinner]
+    kcal: 620
+    proteines_g: 36
+    glucides_g: 80
+    lipides_g: 14
+    allergenes: [fish]
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss, balanced_diet, muscle_gain]
+    ingredients: [riz-blanc, poisson, tomate]
+    proteines: [poisson]
+    cout: 6000
+
+  - slug: lentilles-riz
+    nom: Lentilles et riz
+    types: [lunch, dinner]
+    kcal: 610
+    proteines_g: 26
+    glucides_g: 104
+    lipides_g: 8
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [balanced_diet, weight_maintenance, muscle_gain]
+    ingredients: [riz-blanc, lentilles, oignon]
+    proteines: [lentilles]
+    cout: 3000
+
+  - slug: voanjobory-porc
+    nom: Voanjobory au porc et riz
+    types: [lunch, dinner]
+    kcal: 740
+    proteines_g: 34
+    glucides_g: 84
+    lipides_g: 28
+    allergenes: []
+    restrictions: [no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_gain, muscle_gain]
+    ingredients: [riz-blanc, voanjobory, porc]
+    proteines: [voanjobory, porc]
+    cout: 5500
+
+  - slug: soupe-legumes-pates
+    nom: Soupe de légumes aux pâtes
+    types: [lunch, dinner]
+    kcal: 480
+    proteines_g: 16
+    glucides_g: 76
+    lipides_g: 10
+    allergenes: [gluten]
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free]
+    objectifs: [weight_loss, balanced_diet]
+    ingredients: [pates, carotte, chou]
+    proteines: []
+    cout: 2500
+
+  - slug: crevettes-sautees
+    nom: Crevettes sautées à l'ail et riz
+    types: [lunch, dinner]
+    kcal: 650
+    proteines_g: 34
+    glucides_g: 84
+    lipides_g: 16
+    allergenes: [crustaceans]
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [muscle_gain, weight_loss]
+    ingredients: [riz-blanc, crevettes, ail]
+    proteines: [crevettes]
+    cout: 9000
+
+  - slug: brede-haricots
+    nom: Brèdes mafana et haricots rouges
+    types: [lunch, dinner]
+    kcal: 560
+    proteines_g: 24
+    glucides_g: 90
+    lipides_g: 8
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss, balanced_diet]
+    ingredients: [riz-blanc, haricots-rouges, brede-mafana]
+    proteines: [haricots-rouges]
+    cout: 2800
+
+  - slug: zebu-sauce-arachide
+    nom: Zébu sauce arachide et riz
+    types: [lunch, dinner]
+    kcal: 820
+    proteines_g: 44
+    glucides_g: 82
+    lipides_g: 36
+    allergenes: [peanut]
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_gain, muscle_gain]
+    ingredients: [riz-blanc, boeuf, arachide]
+    proteines: [boeuf, arachide]
+    cout: 7500
+
+  - slug: poulet-grille-legumes
+    nom: Poulet grillé et légumes sautés
+    types: [lunch, dinner]
+    kcal: 540
+    proteines_g: 46
+    glucides_g: 40
+    lipides_g: 20
+    allergenes: []
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss, muscle_gain]
+    ingredients: [poulet, courgette, carotte]
+    proteines: [poulet]
+    cout: 6500
+
+  - slug: mi-sao
+    nom: Mi-sao aux légumes et à l'œuf
+    types: [lunch, dinner]
+    kcal: 640
+    proteines_g: 22
+    glucides_g: 88
+    lipides_g: 20
+    allergenes: [gluten, egg, soy]
+    restrictions: [vegetarian, no_pork, no_alcohol, lactose_free]
+    objectifs: [balanced_diet, weight_maintenance]
+    ingredients: [nouilles, oeuf, chou, sauce-soja]
+    proteines: [oeuf]
+    cout: 3500
+
+  - slug: poisson-coco
+    nom: Poisson au coco et riz
+    types: [lunch, dinner]
+    kcal: 700
+    proteines_g: 34
+    glucides_g: 82
+    lipides_g: 26
+    allergenes: [fish]
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_maintenance, balanced_diet]
+    ingredients: [riz-blanc, poisson, lait-coco]
+    proteines: [poisson]
+    cout: 6500
+
+  - slug: tofu-legumes-riz
+    nom: Tofu sauté aux légumes et riz
+    types: [lunch, dinner]
+    kcal: 590
+    proteines_g: 28
+    glucides_g: 84
+    lipides_g: 16
+    allergenes: [soy]
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [muscle_gain, weight_loss, balanced_diet]
+    ingredients: [riz-blanc, tofu, poivron]
+    proteines: [tofu]
+    cout: 4000
+
+  - slug: gratin-pates-fromage
+    nom: Gratin de pâtes au fromage
+    types: [lunch, dinner]
+    kcal: 780
+    proteines_g: 30
+    glucides_g: 90
+    lipides_g: 32
+    allergenes: [gluten, milk]
+    restrictions: [vegetarian, no_pork, no_alcohol]
+    objectifs: [weight_gain]
+    ingredients: [pates, fromage, lait]
+    proteines: [fromage]
+    cout: 5000
+
+  - slug: omelette-legumes-riz
+    nom: Omelette aux légumes et riz
+    types: [lunch, dinner]
+    kcal: 600
+    proteines_g: 26
+    glucides_g: 78
+    lipides_g: 20
+    allergenes: [egg]
+    restrictions: [vegetarian, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [balanced_diet, weight_maintenance]
+    ingredients: [riz-blanc, oeuf, oignon]
+    proteines: [oeuf]
+    cout: 3000
+
+  - slug: boeuf-patate-douce
+    nom: Bœuf mijoté et patate douce
+    types: [lunch, dinner]
+    kcal: 650
+    proteines_g: 38
+    glucides_g: 70
+    lipides_g: 22
+    allergenes: []
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [muscle_gain, weight_maintenance]
+    ingredients: [boeuf, patate-douce]
+    proteines: [boeuf]
+    cout: 6000
+
+  - slug: soupe-poisson
+    nom: Soupe de poisson aux légumes
+    types: [lunch, dinner]
+    kcal: 460
+    proteines_g: 32
+    glucides_g: 46
+    lipides_g: 14
+    allergenes: [fish, celery]
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss]
+    ingredients: [poisson, celeri, carotte]
+    proteines: [poisson]
+    cout: 5000
+
+  - slug: curry-pois-chiches
+    nom: Curry de pois chiches et riz
+    types: [lunch, dinner]
+    kcal: 630
+    proteines_g: 24
+    glucides_g: 98
+    lipides_g: 14
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [balanced_diet, weight_maintenance]
+    ingredients: [riz-blanc, pois-chiches, tomate]
+    proteines: [pois-chiches]
+    cout: 3200
+
+  - slug: salade-pates-thon
+    nom: Salade de pâtes au thon
+    types: [lunch, dinner]
+    kcal: 560
+    proteines_g: 30
+    glucides_g: 70
+    lipides_g: 16
+    allergenes: [gluten, fish, egg, mustard]
+    restrictions: [no_pork, no_alcohol, lactose_free]
+    objectifs: [weight_maintenance]
+    ingredients: [pates, thon, oeuf, moutarde]
+    proteines: [thon, oeuf]
+    cout: 4500
+
+  - slug: saucisse-lentilles
+    nom: Saucisses et lentilles
+    types: [lunch, dinner]
+    kcal: 760
+    proteines_g: 36
+    glucides_g: 70
+    lipides_g: 34
+    allergenes: []
+    restrictions: [no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_gain]
+    ingredients: [saucisse-porc, lentilles]
+    proteines: [porc, lentilles]
+    cout: 5500
+
+  - slug: poulet-brocolis
+    nom: Poulet, brocolis et riz complet
+    types: [lunch, dinner]
+    kcal: 610
+    proteines_g: 42
+    glucides_g: 72
+    lipides_g: 14
+    allergenes: []
+    restrictions: [no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [muscle_gain, weight_loss, balanced_diet]
+    ingredients: [riz-complet, poulet, brocoli]
+    proteines: [poulet]
+    cout: 6800
+
+  - slug: riz-lasary
+    nom: Riz et lasary de légumes
+    types: [lunch, dinner]
+    kcal: 520
+    proteines_g: 12
+    glucides_g: 100
+    lipides_g: 8
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss, habit_improvement]
+    ingredients: [riz-blanc, carotte, haricots-verts]
+    proteines: []
+    cout: 2000
+
+  - slug: soupe-manioc-legumes
+    nom: Soupe légère de manioc et légumes
+    types: [dinner]
+    kcal: 420
+    proteines_g: 8
+    glucides_g: 80
+    lipides_g: 8
+    allergenes: []
+    restrictions: [vegetarian, vegan, no_pork, no_alcohol, lactose_free, gluten_free]
+    objectifs: [weight_loss]
+    ingredients: [manioc, chou, carotte]
+    proteines: []
+    cout: 1800

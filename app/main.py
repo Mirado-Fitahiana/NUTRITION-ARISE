@@ -4,6 +4,8 @@ Service autonome (§4.2) : base dédiée, migrations propres, aucun appel
 synchrone vers NestJS pendant un traitement nutritionnel.
 """
 
+import asyncio
+import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -17,12 +19,42 @@ from app.core.logging import (
     configure_logging,
     set_correlation_id,
 )
-from app.routers import ai_test, catalog, console, health, profile
+from app.routers import (
+    admin_collecte,
+    admin_laboratoire,
+    admin_reglages,
+    admin_supervision,
+    ai_test,
+    catalog,
+    console,
+    health,
+    pilotage,
+    planning,
+    pricing,
+    profile,
+)
+from app.services import executions
+
+logger = logging.getLogger("app.main")
+
+
+async def _reprendre_executions() -> None:
+    """Une exécution encore « en cours » au démarrage a perdu son processus
+    (rechargement d'uvicorn en développement) : elle passe en `interrupted`.
+    Base injoignable ou migration absente : on démarre quand même."""
+    try:
+        nombre = await asyncio.wait_for(executions.interrompre_orphelins(), timeout=5)
+    except Exception as exc:  # noqa: BLE001
+        logger.info("reprise des exécutions non effectuée (%s)", type(exc).__name__)
+        return
+    if nombre:
+        logger.warning("%s exécution(s) marquée(s) interrompue(s) au démarrage", nombre)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     configure_logging(settings.log_level)
+    await _reprendre_executions()
     yield
     await engine.dispose()
 
@@ -59,9 +91,19 @@ app.include_router(health.router)
 app.include_router(profile.router)
 app.include_router(catalog.public)
 app.include_router(catalog.admin)
+app.include_router(pricing.public)
+app.include_router(pricing.admin)
+app.include_router(planning.router)
 app.include_router(ai_test.router)
 # Banc d'essai interne (FN-034). Le routeur se refuse lui-même en production.
 app.include_router(console.router)
+# Plateforme de pilotage (plan.md) : API admin gardées par rôle, pages refusées
+# en production comme la console.
+app.include_router(admin_supervision.router)
+app.include_router(admin_collecte.router)
+app.include_router(admin_reglages.router)
+app.include_router(admin_laboratoire.router)
+app.include_router(pilotage.router)
 
 
 @app.get("/", tags=["meta"])
@@ -71,4 +113,5 @@ async def root() -> dict[str, str]:
         "version": app.version,
         "docs": "/docs",
         "console": "/console",
+        "pilotage": "/pilotage",
     }

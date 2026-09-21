@@ -208,6 +208,48 @@ class CostConfidence(StrEnum):
     OBSERVED = "observed"
 
 
+class VendorType(StrEnum):
+    """FN-030 · D-10 — nature d'un point de vente.
+
+    `OFFICIAL_REFERENCE` n'est pas un commerce : c'est le porteur des séries
+    publiques (INSTAT, mercuriale). Le distinguer évite qu'un indice régional
+    soit présenté comme le prix relevé chez un commerçant précis.
+    """
+
+    SUPERMARKET = "supermarket"
+    MARKET = "market"
+    GROCERY = "grocery"
+    OFFICIAL_REFERENCE = "official_reference"
+
+
+class PriceSource(StrEnum):
+    """D-08 — la méthode de collecte est un simple attribut de l'observation.
+
+    C'est ce qui permet d'ajouter le scraping plus tard sans réécrire le
+    pipeline, et de pondérer la confiance selon l'origine.
+    """
+
+    MANUAL = "manual"
+    OFFICIAL = "official"
+    COMMUNITY = "community"
+    SCRAPING = "scraping"
+
+
+class PriceFreshness(StrEnum):
+    """FN-016 — fraîcheur d'un relevé. Les seuils sont **configurables** ;
+    les valeurs par défaut vivent dans `app.services.pricing`.
+
+    `OBSOLETE` est exclu du budget : un prix de plus de 45 jours ne doit pas
+    servir à chiffrer une liste de courses.
+    """
+
+    RECENT = "recent"
+    STALE = "stale"
+    OBSOLETE = "obsolete"
+    ESTIMATED = "estimated"
+    UNAVAILABLE = "unavailable"
+
+
 class MealPlanStatus(StrEnum):
     """FN-023 / FN-001 — un programme actif devient `obsolete` quand le profil
     change ; il n'est jamais supprimé."""
@@ -226,6 +268,23 @@ class JobStatus(StrEnum):
     RUNNING = "running"
     SUCCEEDED = "succeeded"
     FAILED = "failed"
+
+
+class OperationStatus(StrEnum):
+    """Cycle de vie d'une exécution longue de la plateforme de pilotage
+    (collecte, rejeu, indexation, évaluation).
+
+    `INTERRUPTED` n'est pas un échec : le processus s'est arrêté en cours de
+    route (redémarrage d'uvicorn en développement). La cause n'est pas la même,
+    la reprise non plus.
+    """
+
+    PENDING = "pending"
+    RUNNING = "running"
+    SUCCEEDED = "succeeded"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+    INTERRUPTED = "interrupted"
 
 
 class TrackedStatus(StrEnum):

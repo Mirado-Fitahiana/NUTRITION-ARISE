@@ -108,6 +108,39 @@ comportement attendu de FN-003, pas un défaut de configuration.
 Ce n'est pas encore l'interface de saisie décrite par FN-034 : les API
 d'écriture du catalogue et la file de validation restent à écrire.
 
+### Plateforme de pilotage
+
+Service démarré, ouvrir **<http://127.0.0.1:8000/pilotage>**. Plan, décisions et écarts : `plan.md`, à la racine de l'espace de travail ARISE.
+
+| Page | Ce qu'elle permet |
+|---|---|
+| **Supervision** (`/pilotage`) | indicateurs FN-035 mesurés à chaque affichage, chacun avec sa preuve ; trace complète d'une génération |
+| **Collecte** (`/pilotage/collecte`) | relevé de structure et collecte à blanc suivis en direct, qualification SPIKE-01 mesurée, file de revue (alias), erreurs, rejeu sur instantanés |
+| **Laboratoire** (`/pilotage/laboratoire`) | la chaîne filtrage → score → composition → validation → contexte LLM → rédaction, pas à pas ; comparaison de deux jeux de poids ; campagne de cas d'évaluation |
+| **Réglages** (`/pilotage/reglages`) | registre typé de `app_settings`, jeux de poids versionnés, configuration d'environnement en lecture seule |
+
+Avant la première utilisation :
+
+```bash
+pip install -r requirements.txt          # beautifulsoup4, ajouté pour les connecteurs
+alembic upgrade head                     # tables de collecte et d'exécution, sources kibo.mg et abcie.org
+python scripts/generate_dev_keys.py      # si keys/ est vide : la plateforme utilise un jeton de développement admin
+```
+
+Trois verrous tiennent tant que le lot 4 n'est pas ouvert : **aucune offre collectée
+n'est écrite dans `ingredient_prices`** (vérifié sur le code par
+`tests/test_collecte_moteur.py`), les garde-fous — `robots.txt` relu à chaque
+passage, délai plancher de 3 s, agent déclaré, redirections vérifiées avant d'être
+suivies — sont dans le code, et `bonmarche.mg` n'existe pas en base. Renseigner
+`SCRAPING_CONTACT` dans `.env` avant toute collecte réelle.
+
+Le laboratoire fonctionne base coupée, sur `evaluation/catalogues/fictif.yaml` : des
+données **inventées**, marquées comme telles à l'écran. Aucun appel LLM n'est émis ;
+la rédaction s'éprouve sur une réponse simulée.
+
+Comme la console, la plateforme est **refusée en production** (404), et `run.py`
+écoute désormais sur `127.0.0.1` par défaut (`HOST` dans `.env`).
+
 ### Tests
 
 ```bash
@@ -129,12 +162,14 @@ app/
   schemas/       contrats HTTP d'entrée et de sortie
   services/      règles métier pures, testables sans base
   routers/       points d'entrée HTTP
-  templates/     banc d'essai interne (FN-034)
+  templates/     banc d'essai interne (FN-034) et pages de pilotage
+  static/        pilotage : feuille de style, scripts, polices ARISE
   seed/          contrat YAML et chargeur idempotent
 migrations/      Alembic
 scripts/         outillage hors serveur (clés de développement)
 seeds/           catalogue versionné (ingrédients, plats)
-tests/           tests unitaires
+evaluation/      cas d'évaluation et catalogue fictif du laboratoire
+tests/           tests unitaires (fixtures/html : pages reconstituées des connecteurs)
 ```
 
 ### Ce que la suite de tests protège

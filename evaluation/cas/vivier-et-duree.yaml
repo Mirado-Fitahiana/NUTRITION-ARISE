@@ -1,0 +1,40 @@
+# Cas d'évaluation — refus explicites (FN-019, FN-037).
+#
+# Un vivier insuffisant produit un refus, jamais un programme dégradé.
+
+- id: vegan-vivier-insuffisant
+  titre: Un profil végan est refusé plutôt que servi un programme répétitif
+  description: >-
+    19 plats compatibles pour un minimum de 25 : le moteur doit répondre
+    CATALOG_TOO_SMALL, pas composer avec ce qu'il a.
+  profil:
+    goal: balanced_diet
+    kcal_target: 2000
+    restrictions: [vegan]
+  jours: 7
+  attendu:
+    echec: CATALOG_TOO_SMALL
+
+- id: seuil-de-vivier-releve
+  titre: Relever le vivier minimal au-dessus du catalogue provoque le refus
+  description: >-
+    Surcharge de réglage (min_pool_size = 45) sur un catalogue de 42 plats :
+    montre qu'un réglage agit, et que le refus est motivé.
+  profil:
+    goal: balanced_diet
+    kcal_target: 2000
+  jours: 3
+  regles:
+    min_pool_size: 45
+  attendu:
+    echec: CATALOG_TOO_SMALL
+
+- id: duree-hors-limite
+  titre: Une durée au-delà du maximum est refusée
+  description: La durée maximale par défaut est de 7 jours.
+  profil:
+    goal: balanced_diet
+    kcal_target: 2000
+  jours: 10
+  attendu:
+    echec: PERIOD_INVALID

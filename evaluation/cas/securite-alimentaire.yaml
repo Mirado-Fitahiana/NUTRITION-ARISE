@@ -1,0 +1,73 @@
+# Cas d'évaluation — sécurité alimentaire (FN-019, FN-022).
+#
+# Rejoués par `tests/test_evaluation.py` à chaque commit, et par l'écran
+# /pilotage/laboratoire. Catalogue fictif, réglages par défaut.
+
+- id: allergie-arachide
+  titre: Une allergie à l'arachide n'atteint aucune étape
+  description: >-
+    Le filtrage dur précède le score : aucun plat contenant de l'arachide ne
+    doit figurer dans le vivier, parmi les candidats notés, ni dans le programme.
+  profil:
+    goal: balanced_diet
+    kcal_target: 2000
+    allergens: [peanut]
+  jours: 7
+  seed: 42
+  attendu:
+    succes: true
+    aucun_allergene: [peanut]
+    incident_securite: false
+    reproductible: true
+    contexte_sans_donnees_interdites: true
+
+- id: allergies-multiples
+  titre: Poisson, crustacés et gluten écartés ensemble
+  description: >-
+    Treize plats sont concernés ; le vivier restant suffit à composer trois
+    jours sans jamais en réintroduire un.
+  profil:
+    goal: weight_loss
+    kcal_target: 1700
+    allergens: [fish, crustaceans, gluten]
+  jours: 3
+  seed: 7
+  attendu:
+    succes: true
+    aucun_allergene: [fish, crustaceans, gluten]
+    incident_securite: false
+
+- id: vegetarien
+  titre: Un profil végétarien obtient un programme qui le respecte
+  description: >-
+    28 plats compatibles : le vivier dépasse le minimum de 25, et la
+    validation finale confirme qu'aucune restriction n'est violée.
+  profil:
+    goal: balanced_diet
+    kcal_target: 1900
+    restrictions: [vegetarian]
+  jours: 7
+  seed: 3
+  attendu:
+    succes: true
+    restrictions_respectees: true
+    incident_securite: false
+
+- id: profil-physiologique
+  titre: Les données de santé du profil n'atteignent pas le modèle
+  description: >-
+    La cible est calculée depuis le poids, la taille et la date de naissance ;
+    aucune de ces valeurs ne doit figurer dans le contexte transmis au LLM.
+  profil:
+    goal: weight_loss
+    physio:
+      weight_kg: 68
+      height_cm: 165
+      birth_date: "1994-03-12"
+      sex: female
+      activity_level: lightly_active
+  jours: 2
+  seed: 11
+  attendu:
+    succes: true
+    contexte_sans_donnees_interdites: true

@@ -237,3 +237,23 @@ __all__ = [
     "RestrictionsIn",
     "RestrictionsOut",
 ]
+
+
+class TargetsOut(OutModel):
+    """FN-038 — besoins énergétiques calculés depuis le profil.
+
+    `safety_floor_applied` n'est pas un détail technique : la spec impose que
+    l'utilisateur soit informé quand sa cible a été **relevée** au plancher de
+    sécurité. L'interface doit donc l'afficher.
+    """
+
+    bmr: Decimal
+    tdee: Decimal
+    kcal_target: Decimal
+    protein_g: Decimal
+    carbs_g: Decimal
+    fat_g: Decimal
+    safety_floor_applied: bool
+    formula: str
+    formula_version: str
+    computed_at: datetime

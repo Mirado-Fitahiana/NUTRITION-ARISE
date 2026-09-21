@@ -22,6 +22,13 @@ from app.models.catalog import (
     IngredientAlias,
     IngredientUnitConversion,
 )
+from app.models.collecte import (
+    OperationRun,
+    OperationRunEvent,
+    ScrapedOffer,
+    ScrapingError,
+    ScrapingSource,
+)
 from app.models.configuration import AppSetting, ScoringWeightSet
 from app.models.planning import (
     GenerationJob,
@@ -33,6 +40,7 @@ from app.models.planning import (
     RecommendationRun,
     UserMealFeedback,
 )
+from app.models.pricing import DishCostEstimate, IngredientPrice, Vendor
 from app.models.profile import (
     DietaryPreference,
     DietaryRestriction,
@@ -53,6 +61,7 @@ __all__ = [
     "DietaryRestriction",
     "Dish",
     "DishAllergen",
+    "DishCostEstimate",
     "DishEmbedding",
     "DishIngredient",
     "DishStep",
@@ -62,6 +71,7 @@ __all__ = [
     "GenerationJob",
     "Ingredient",
     "IngredientAlias",
+    "IngredientPrice",
     "IngredientUnitConversion",
     "MealPlan",
     "MealPlanDay",
@@ -69,10 +79,16 @@ __all__ = [
     "NutritionProfile",
     "NutritionProfileHistory",
     "NutritionTarget",
+    "OperationRun",
+    "OperationRunEvent",
     "PlanValidation",
     "RecommendationCandidate",
     "RecommendationRun",
     "ScoringWeightSet",
+    "ScrapedOffer",
+    "ScrapingError",
+    "ScrapingSource",
     "UserAllergy",
     "UserMealFeedback",
+    "Vendor",
 ]

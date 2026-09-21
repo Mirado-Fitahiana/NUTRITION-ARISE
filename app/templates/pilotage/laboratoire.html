@@ -1,0 +1,35 @@
+{% extends "pilotage/base.html" %}
+
+{% block contenu %}
+<div class="labo">
+  <aside class="carte labo__formulaire" id="formulaire" aria-label="Profil d'essai"></aside>
+
+  <div class="labo__resultats">
+    <div id="comparaison"></div>
+    <div class="pile" id="resultats">
+      <section class="carte">
+        <header class="carte__tete">
+          <p class="surtitre">Le « RAG » d'ARISE</p>
+          <h2 class="carte__titre">Le modèle ne choisit rien : il rédige</h2>
+          <p class="carte__sous-titre">D-06 interdit au LLM de sélectionner des plats. La récupération est un filtrage dur puis un score métier ; le modèle reçoit un programme déjà décidé et en rédige la présentation, en un seul appel.</p>
+        </header>
+        <ol class="controles">
+          <li class="controle"><strong>①</strong><span class="controle__libelle">Vivier — ce qui est interdit est écarté avant tout score</span></li>
+          <li class="controle"><strong>②</strong><span class="controle__libelle">Score — la décomposition de chaque candidat, créneau par créneau</span></li>
+          <li class="controle"><strong>③</strong><span class="controle__libelle">Composition — le programme jour par jour, calories comprises</span></li>
+          <li class="controle"><strong>④</strong><span class="controle__libelle">Validation — les contrôles rejoués sur le programme final</span></li>
+          <li class="controle"><strong>⑤</strong><span class="controle__libelle">Contexte — ce que le modèle recevrait, sans donnée interdite</span></li>
+          <li class="controle"><strong>⑥</strong><span class="controle__libelle">Rédaction — texte de repli, ou réponse simulée à éprouver</span></li>
+          <li class="controle"><strong>⑦</strong><span class="controle__libelle">Après rédaction — la preuve que la sélection n'a pas bougé</span></li>
+        </ol>
+        <p class="aide">Rien n'est écrit en base : ni programme, ni trace de génération.</p>
+      </section>
+    </div>
+    <section class="carte" id="campagne"></section>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/pilotage/static/laboratoire.js?v={{ v }}"></script>
+{% endblock %}

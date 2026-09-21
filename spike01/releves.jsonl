@@ -1,0 +1,2 @@
+{"source": "kibo", "horodatage": "2026-09-15T12:25:30.655847+00:00", "http_status": 200, "robots_autorise": true, "produits": 17, "prix_trouves": 17, "exemples_prix": ["23 900 Ar", "48 900 Ar", "21 500 Ar"], "taille_octets": 774590, "erreur": null}
+{"source": "abcie", "horodatage": "2026-09-15T12:25:39.688414+00:00", "http_status": 200, "robots_autorise": true, "produits": 21, "prix_trouves": 12, "exemples_prix": ["23 400 Ar", "21 000 Ar", "8 400 Ar"], "taille_octets": 182062, "erreur": null}

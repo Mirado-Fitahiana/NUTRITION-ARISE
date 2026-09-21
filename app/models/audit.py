@@ -45,10 +45,19 @@ class AuditAction:
     PLAN_GENERATED = "plan.generated"
     PLAN_VALIDATION_REJECTED = "plan.validation_rejected"
 
+    VENDOR_CREATED = "vendor.created"
+    VENDOR_UPDATED = "vendor.updated"
     PRICE_RECORDED = "price.recorded"
     PRICE_IMPORTED = "price.imported"
     COLLECTION_STARTED = "collection.started"
     COLLECTION_FAILED = "collection.failed"
+    COLLECTION_CANCELLED = "collection.cancelled"
+    SCRAPING_SOURCE_UPDATED = "scraping_source.updated"
+    INGREDIENT_ALIAS_ADDED = "ingredient.alias_added"
+
+    SETTING_UPDATED = "setting.updated"
+    SCORING_WEIGHTS_CREATED = "scoring_weights.created"
+    SCORING_WEIGHTS_ACTIVATED = "scoring_weights.activated"
 
     ACCOUNT_DELETED = "account.deleted"
 

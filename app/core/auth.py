@@ -305,6 +305,12 @@ require_catalog_editor = require_role(Role.ADMIN, Role.NUTRITIONIST)
 #: L'administrateur saisit, il ne signe pas.
 require_validator = require_role(Role.NUTRITIONIST)
 
+#: Plateforme de pilotage : lancer une collecte ou modifier un poids du score
+#: engage le service entier. Un nutritionniste consulte, il ne règle pas.
+#: S'ajoute à `require_catalog_editor`, que `tests/test_isolation.py` exige sur
+#: toute route `/api/v1/admin`.
+require_admin = require_role(Role.ADMIN)
+
 
 __all__ = [
     "ALLOWED_ALGORITHMS",
@@ -315,6 +321,7 @@ __all__ = [
     "current_principal",
     "current_user",
     "decode_token",
+    "require_admin",
     "require_catalog_editor",
     "require_role",
     "require_validator",

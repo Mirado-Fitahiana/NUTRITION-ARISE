@@ -1,0 +1,79 @@
+{% extends "pilotage/base.html" %}
+
+{% block contenu %}
+<section class="verrous" aria-label="Verrous de la collecte">
+  <div class="verrou">
+    <svg class="icone" aria-hidden="true"><use href="#i-cadenas"></use></svg>
+    <div><strong>Aucun prix écrit</strong><span>Les offres restent en transit tant que le lot 4 n'a pas reçu son feu vert.</span></div>
+  </div>
+  <div class="verrou">
+    <svg class="icone" aria-hidden="true"><use href="#i-shield"></use></svg>
+    <div><strong>Garde-fous dans le code</strong><span>robots.txt relu à chaque passage, délai plancher de 3 s, agent déclaré, aucun contournement.</span></div>
+  </div>
+  <div class="verrou">
+    <svg class="icone" aria-hidden="true"><use href="#i-close"></use></svg>
+    <div><strong>bonmarche.mg exclu</strong><span>Arbitrage de conformité en attente : son robots.txt interdit nommément les agents d'IA.</span></div>
+  </div>
+</section>
+
+<nav class="onglets" id="onglets" role="tablist" aria-label="Collecte">
+  <button type="button" class="onglets__onglet" role="tab" data-onglet="sources">Sources et qualification</button>
+  <button type="button" class="onglets__onglet" role="tab" data-onglet="executions">Exécutions</button>
+  <button type="button" class="onglets__onglet" role="tab" data-onglet="revue">File de revue</button>
+  <button type="button" class="onglets__onglet" role="tab" data-onglet="erreurs">Erreurs</button>
+</nav>
+
+<div class="pile" data-panneau="sources">
+  <section class="carte" id="verdict"></section>
+  <div class="grille grille--2" id="sources"></div>
+</div>
+
+<div data-panneau="executions" hidden>
+  <section class="carte">
+    <header class="carte__tete carte__tete--rangee">
+      <div>
+        <h2 class="carte__titre">Historique des exécutions</h2>
+        <p class="carte__sous-titre">Relevés de structure, collectes à blanc et rejeux. Une ligne ouvre le suivi détaillé.</p>
+      </div>
+      <button type="button" class="bouton bouton--contour bouton--petit" data-rafraichir="executions">
+        <svg class="icone" aria-hidden="true"><use href="#i-refresh"></use></svg>Actualiser
+      </button>
+    </header>
+    <div id="executions"></div>
+  </section>
+</div>
+
+<div data-panneau="revue" hidden>
+  <section class="carte">
+    <header class="carte__tete carte__tete--rangee">
+      <div>
+        <h2 class="carte__titre">File de revue</h2>
+        <p class="carte__sous-titre">Libellés collectés qu'aucun ingrédient ni alias ne porte. Associer un libellé crée un alias : l'appariement reste exact, et la prochaine collecte le reconnaît.</p>
+      </div>
+      <button type="button" class="bouton bouton--contour bouton--petit" data-rafraichir="revue">
+        <svg class="icone" aria-hidden="true"><use href="#i-refresh"></use></svg>Actualiser
+      </button>
+    </header>
+    <div id="revue"></div>
+  </section>
+</div>
+
+<div data-panneau="erreurs" hidden>
+  <section class="carte">
+    <header class="carte__tete carte__tete--rangee">
+      <div>
+        <h2 class="carte__titre">Erreurs de collecte</h2>
+        <p class="carte__sous-titre">Chaque erreur garde son contexte : URL, étape, statut HTTP (FN-013).</p>
+      </div>
+      <button type="button" class="bouton bouton--contour bouton--petit" data-rafraichir="erreurs">
+        <svg class="icone" aria-hidden="true"><use href="#i-refresh"></use></svg>Actualiser
+      </button>
+    </header>
+    <div id="erreurs"></div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/pilotage/static/collecte.js?v={{ v }}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "pilotage/base.html" %}
+
+{% block contenu %}
+<div class="barre-outils">
+  <div class="segmente" id="periode" role="group" aria-label="Période mesurée">
+    <button type="button" class="segmente__option" data-valeur="1">24 heures</button>
+    <button type="button" class="segmente__option est-actif" data-valeur="7">7 jours</button>
+    <button type="button" class="segmente__option" data-valeur="30">30 jours</button>
+  </div>
+  <p class="aide" id="maj">Mesure en cours…</p>
+  <button type="button" class="bouton bouton--contour bouton--petit" id="actualiser">
+    <svg class="icone" aria-hidden="true"><use href="#i-refresh"></use></svg>Actualiser
+  </button>
+</div>
+
+<div id="bandeau-base"></div>
+<div id="bandeau-securite"></div>
+<section class="grille grille--4" id="resume" aria-label="Résumé des indicateurs"></section>
+<div class="grille grille--blocs" id="blocs"></div>
+
+<section class="carte">
+  <header class="carte__tete">
+    <h2 class="carte__titre">Dernières générations</h2>
+    <p class="carte__sous-titre">Une ligne ouvre la trace complète : paramètres, candidats et score, contrôles de la validation finale, journal d'audit.</p>
+  </header>
+  <div id="generations"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/pilotage/static/supervision.js?v={{ v }}"></script>
+{% endblock %}

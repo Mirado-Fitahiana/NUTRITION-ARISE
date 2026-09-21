@@ -28,6 +28,9 @@ PyJWT[crypto]==2.10.1
 # --- Clients externes ---
 httpx==0.28.1
 
+# --- Collecte (lot 4, conditionnel) — analyse HTML en pur Python, rien à compiler sous 3.14 ---
+beautifulsoup4==4.14.2
+
 # --- Seed et observabilité ---
 PyYAML==6.0.3
 sentry-sdk==2.66.1

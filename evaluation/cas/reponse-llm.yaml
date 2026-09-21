@@ -1,0 +1,78 @@
+# Cas d'évaluation — rédaction par le modèle (FN-021, D-06).
+#
+# Aucun appel réel n'est émis : chaque cas porte une réponse simulée, que la
+# validation doit accepter ou rejeter. Sur une journée de cinq créneaux, les
+# identifiants attendus sont J1-breakfast, J1-morning_snack, J1-lunch,
+# J1-afternoon_snack et J1-dinner.
+
+- id: llm-reponse-conforme
+  titre: Une réponse conforme est acceptée
+  profil:
+    goal: balanced_diet
+    kcal_target: 2000
+  jours: 1
+  seed: 42
+  reponse_llm:
+    plan_summary: Une journée équilibrée, construite autour de plats simples.
+    days:
+      - day: 1
+        meals:
+          - meal_id: J1-breakfast
+            justification: Un départ rassasiant pour la matinée.
+          - meal_id: J1-morning_snack
+            justification: Une collation légère.
+          - meal_id: J1-lunch
+            justification: Un plat complet au cœur de la journée.
+          - meal_id: J1-afternoon_snack
+            justification: De quoi tenir jusqu'au soir.
+          - meal_id: J1-dinner
+            justification: Un dîner plus léger que le déjeuner.
+        tip: Buvez de l'eau régulièrement.
+    warnings: []
+  attendu:
+    succes: true
+    reponse_llm_valide: true
+
+- id: llm-identifiant-inconnu
+  titre: Un plat inventé par le modèle invalide la réponse
+  description: >-
+    Le modèle ne peut citer que les meal_id fournis. « J9-dinner » n'existe
+    pas : la réponse est rejetée et le texte de repli s'applique.
+  profil:
+    goal: balanced_diet
+    kcal_target: 2000
+  jours: 1
+  seed: 42
+  reponse_llm:
+    plan_summary: Une journée équilibrée.
+    days:
+      - day: 1
+        meals:
+          - meal_id: J1-lunch
+            justification: Un plat complet et rassasiant.
+          - meal_id: J9-dinner
+            justification: Un plat que le moteur n'a pas choisi.
+  attendu:
+    reponse_llm_valide: false
+    reponse_llm_erreurs_contiennent: [identifiant inconnu]
+
+- id: llm-chiffres
+  titre: Un chiffre écrit par le modèle invalide la réponse
+  description: >-
+    Calories, quantités et prix sont injectés par le code après rédaction :
+    un modèle qui écrit « 650 kcal » peut se tromper, donc il n'en écrit pas.
+  profil:
+    goal: balanced_diet
+    kcal_target: 2000
+  jours: 1
+  seed: 42
+  reponse_llm:
+    plan_summary: Une journée équilibrée.
+    days:
+      - day: 1
+        meals:
+          - meal_id: J1-lunch
+            justification: Environ 650 kcal pour tenir l'après-midi.
+  attendu:
+    reponse_llm_valide: false
+    reponse_llm_erreurs_contiennent: [chiffre]

@@ -42,8 +42,18 @@ def test_les_trois_routes_existent():
     assert chemins == {
         "/api/v1/nutrition/meal-plans",
         "/api/v1/nutrition/meal-plans/generate",
+        "/api/v1/nutrition/meal-plans/today",
         "/api/v1/nutrition/meal-plans/{job_id}",
     }
+
+
+def test_le_menu_du_jour_prime_sur_le_suivi_de_job():
+    """`today` n'est pas un `job_id` : déclarée après `/{job_id}`, la route
+    serait masquée et répondrait 422."""
+    chemins = [r.path for r in ROUTES]
+    assert chemins.index("/api/v1/nutrition/meal-plans/today") < chemins.index(
+        "/api/v1/nutrition/meal-plans/{job_id}"
+    )
 
 
 def test_la_generation_est_asynchrone():

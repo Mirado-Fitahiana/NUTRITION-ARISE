@@ -44,6 +44,12 @@ class AuditAction:
 
     PLAN_GENERATED = "plan.generated"
     PLAN_VALIDATION_REJECTED = "plan.validation_rejected"
+    MEAL_TRACKED = "meal.tracked"
+    MEAL_FEEDBACK = "meal.feedback"
+    MEAL_REPLACED = "meal.replaced"
+    #: FN-032 — incident : un utilisateur signale un problème d'allergie.
+    ALLERGY_INCIDENT = "meal.allergy_incident"
+    DISH_PUT_IN_REVIEW = "dish.put_in_review"
 
     VENDOR_CREATED = "vendor.created"
     VENDOR_UPDATED = "vendor.updated"

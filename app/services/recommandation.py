@@ -584,6 +584,61 @@ def valider(
     )
 
 
+def proposer_remplacement(
+    vivier: Vivier,
+    slot: MealSlot,
+    kcal_cible: Decimal,
+    contraintes: ContraintesUtilisateur,
+    *,
+    exclus: frozenset[str],
+    utilisations: dict[str, int] | None = None,
+    poids: dict[str, Decimal] | None = None,
+) -> RepasPropose | None:
+    """FN-025 — « Proposer autre chose » pour un seul repas.
+
+    Le vivier est déjà filtré (allergies, restrictions) : un remplacement ne
+    peut donc pas réintroduire un allergène. `exclus` porte le plat remplacé,
+    les plats refusés sur la période et ceux déjà au menu du jour — un plat
+    refusé n'est pas reproposé dans la même période. Aucun hasard : à score
+    égal, le slug départage, et la même demande donne la même réponse.
+    Renvoie `None` quand aucun autre plat ne convient, plutôt que de reproposer
+    un plat écarté.
+    """
+    deja = utilisations or {}
+    candidats = [
+        (
+            scorer(
+                plat,
+                slot,
+                kcal_cible,
+                contraintes,
+                poids=poids,
+                deja_utilise=deja.get(plat.slug, 0),
+            ),
+            plat,
+        )
+        for plat in _eligibles(list(vivier.retenus), slot)
+        if plat.slug not in exclus
+    ]
+    if not candidats:
+        return None
+    candidats.sort(key=lambda c: (-c[0].total, c[1].slug))
+    score, plat = candidats[0]
+    return RepasPropose(slot=slot, plat=plat, kcal_cible=kcal_cible, score=score)
+
+
+#: Libellés français des objectifs, pour tout texte destiné à l'utilisateur.
+#: Un identifiant technique (`weight_loss`) n'a rien à faire dans une phrase.
+LIBELLES_OBJECTIF: dict[str, str] = {
+    "weight_loss": "perdre du poids",
+    "weight_maintenance": "maintenir votre poids",
+    "weight_gain": "prendre du poids",
+    "muscle_gain": "prendre du muscle",
+    "balanced_diet": "manger équilibré",
+    "habit_improvement": "améliorer vos habitudes alimentaires",
+}
+
+
 def justification_de_repli(programme: ProgrammeGenere, contraintes: ContraintesUtilisateur) -> str:
     """FN-021 — le texte produit sans LLM.
 
@@ -594,7 +649,7 @@ def justification_de_repli(programme: ProgrammeGenere, contraintes: ContraintesU
     repas = sum(len(j.repas) for j in programme.journees)
     return (
         f"Programme de {jours} jour(s), {repas} repas, composé pour un objectif "
-        f"« {contraintes.goal} » autour de {contraintes.kcal_target:.0f} kcal par jour. "
+        f"« {LIBELLES_OBJECTIF.get(str(contraintes.goal), str(contraintes.goal))} » autour de {contraintes.kcal_target:.0f} kcal par jour. "
         "Les plats ont été choisis parmi ceux du catalogue compatibles avec vos "
         "allergies, vos restrictions et vos préférences."
     )
@@ -618,7 +673,9 @@ __all__ = [
     "Vivier",
     "composer",
     "filtrer",
+    "LIBELLES_OBJECTIF",
     "justification_de_repli",
+    "proposer_remplacement",
     "scorer",
     "valider",
 ]

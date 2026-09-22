@@ -169,12 +169,25 @@ ALLOWED_TRANSITIONS: dict[DishStatus, frozenset[DishStatus]] = {
 }
 
 
+#: FN-032 — seule sortie d'un plat publié autre que l'archivage, et elle n'est
+#: **pas** dans la table ci-dessus : aucun éditeur ne peut la déclencher à la
+#: main. Elle est réservée au traitement d'un signalement d'allergie, qui retire
+#: le plat des recommandations le temps qu'un nutritionniste le revalide
+#: (`pending_validation` → `validated` → `published`, avec ses signatures).
+#: Archiver serait irréversible pour un signalement peut-être infondé.
+INCIDENT_REVIEW_TRANSITION: tuple[DishStatus, DishStatus] = (
+    DishStatus.PUBLISHED,
+    DishStatus.PENDING_VALIDATION,
+)
+
+
 def can_transition(current: DishStatus, target: DishStatus) -> bool:
     return target in ALLOWED_TRANSITIONS.get(current, frozenset())
 
 
 __all__ = [
     "ALLOWED_TRANSITIONS",
+    "INCIDENT_REVIEW_TRANSITION",
     "apply_derived",
     "can_transition",
     "components_from_dish",

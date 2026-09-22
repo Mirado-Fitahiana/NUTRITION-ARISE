@@ -467,7 +467,11 @@ async def _materialiser(
 # --------------------------------------------------------------------------
 
 
-def _plan_out(plan: MealPlan, creneaux_attendus: set[MealSlot]) -> PlanOut:
+def _plan_out(
+    plan: MealPlan,
+    creneaux_attendus: set[MealSlot],
+    signales: frozenset[uuid.UUID] = frozenset(),
+) -> PlanOut:
     # Les créneaux qu'aucun plat n'a pu couvrir sont **déduits à la lecture** :
     # un catalogue sans petit-déjeuner produit un programme sans petit-déjeuner,
     # et le client doit le voir plutôt que de croire à un oubli d'affichage.
@@ -498,6 +502,7 @@ def _plan_out(plan: MealPlan, creneaux_attendus: set[MealSlot]) -> PlanOut:
                 kcal_total=jour.kcal_total,
                 meals=[
                     MealOut(
+                        id=repas.id,
                         slot=repas.slot,
                         dish_slug=repas.dish_snapshot.get("slug"),
                         # Le nom vient du **snapshot**, pas du catalogue : c'est
@@ -509,6 +514,8 @@ def _plan_out(plan: MealPlan, creneaux_attendus: set[MealSlot]) -> PlanOut:
                         fat_g=repas.fat_g,
                         estimated_cost=repas.estimated_cost,
                         justification=repas.justification or jour.daily_tip,
+                        tracked_status=repas.tracked_status,
+                        flagged=repas.id in signales,
                     )
                     for repas in sorted(jour.meals, key=lambda m: str(m.slot))
                 ],

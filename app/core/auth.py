@@ -198,10 +198,14 @@ async def decode_token(token: str) -> Principal:
         # qu'un secret symétrique partagé serve à forger un jeton.
         raise _unauthenticated(f"algorithme refusé : {algorithm}")
 
-    key = _dev_public_key()
+    # Les jetons de la console n'ont pas de `kid` ; ceux de NestJS en portent
+    # un. La clé locale ne sert donc qu'aux premiers : sans cette distinction,
+    # configurer une clé de développement ferait refuser tout jeton réel.
+    kid = header.get("kid")
+    key = _dev_public_key() if kid is None else None
     used_dev_key = key is not None
     if key is None:
-        key = await _jwks.get(header.get("kid"))
+        key = await _jwks.get(kid)
 
     try:
         claims = jwt.decode(

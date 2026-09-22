@@ -32,6 +32,7 @@ from app.routers import (
     planning,
     pricing,
     profile,
+    suivi,
 )
 from app.services import executions
 
@@ -93,6 +94,8 @@ app.include_router(catalog.public)
 app.include_router(catalog.admin)
 app.include_router(pricing.public)
 app.include_router(pricing.admin)
+# Avant `planning` : `/meal-plans/today` doit primer sur `/meal-plans/{job_id}`.
+app.include_router(suivi.router)
 app.include_router(planning.router)
 app.include_router(ai_test.router)
 # Banc d'essai interne (FN-034). Le routeur se refuse lui-même en production.

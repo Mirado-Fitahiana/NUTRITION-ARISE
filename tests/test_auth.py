@@ -148,3 +148,42 @@ class TestProductionInterditLesClesLocales:
         monkeypatch.setenv("JWT_DEV_PRIVATE_KEY_PATH", "keys/dev_jwt_private.pem")
         with pytest.raises(ValidationError, match="vides en production"):
             Settings(_env_file=None)
+
+
+class TestCohabitationCleDeDeveloppement:
+    """Une clé de développement configurée ne doit pas masquer le JWKS : les
+    jetons NestJS (qui portent un `kid`) passent par lui, ceux de la console
+    (sans `kid`) par la clé locale."""
+
+    async def test_un_jeton_avec_kid_est_verifie_par_jwks(self, keypair, monkeypatch):
+        from cryptography.hazmat.primitives.serialization import load_pem_public_key
+
+        from app.core import auth
+
+        private, public = keypair
+        demandes: list[str | None] = []
+
+        async def faux_jwks(kid):
+            demandes.append(kid)
+            return load_pem_public_key(public.read_bytes())
+
+        monkeypatch.setattr(auth._jwks, "get", faux_jwks)
+        now = int(time.time())
+        token = jwt.encode(
+            {
+                "sub": "user-002",
+                "iss": settings.jwt_issuer,
+                "aud": ["arise-api", settings.jwt_audience],
+                "iat": now,
+                "exp": now + 3600,
+            },
+            private.read_text(),
+            algorithm="RS256",
+            headers={"kid": "cle-nestjs"},
+        )
+
+        principal = await decode_token(token)
+
+        assert demandes == ["cle-nestjs"]
+        assert principal.dev_key is False
+        assert principal.external_user_id == "user-002"

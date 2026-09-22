@@ -13,7 +13,14 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models.enums import Goal, JobStatus, MealPlanStatus, MealSlot
+from app.models.enums import (
+    FeedbackType,
+    Goal,
+    JobStatus,
+    MealPlanStatus,
+    MealSlot,
+    TrackedStatus,
+)
 
 
 class PlanningModel(BaseModel):
@@ -45,6 +52,8 @@ class JobAccepted(OutModel):
 
 
 class MealOut(OutModel):
+    #: Désigne le repas pour le suivi et le feedback (FN-031, FN-032).
+    id: uuid.UUID
     slot: MealSlot
     dish_slug: str | None
     name: str
@@ -54,6 +63,11 @@ class MealOut(OutModel):
     fat_g: Decimal | None
     estimated_cost: Decimal | None
     justification: str | None
+    tracked_status: TrackedStatus = TrackedStatus.PENDING
+    #: FN-032 — vrai quand ce plat a fait l'objet d'un signalement d'allergie
+    #: (sur ce repas) ou est en revue : le client ne doit plus le présenter
+    #: comme une recommandation.
+    flagged: bool = False
 
 
 class DayOut(OutModel):
@@ -110,8 +124,43 @@ class PlanPage(OutModel):
     items: list[PlanSummary]
 
 
+class TodayOut(OutModel):
+    """Menu du jour : la journée du programme actif qui tombe aujourd'hui."""
+
+    plan_id: uuid.UUID
+    plan_version: int
+    day: DayOut
+    #: Créneaux attendus que le programme ne couvre pas ce jour-là.
+    uncovered_slots: list[str] = Field(default_factory=list)
+
+
+class TrackingIn(PlanningModel):
+    """FN-031 — marquer un repas comme suivi ou non suivi."""
+
+    status: TrackedStatus
+    #: Portions réellement consommées (1 = la portion prévue).
+    consumed_quantity: Decimal | None = Field(default=None, ge=0, le=10)
+
+
+class FeedbackIn(PlanningModel):
+    """FN-032. `allergy_issue` déclenche un incident, pas un simple avis."""
+
+    feedback_type: FeedbackType
+    comment: str | None = Field(default=None, max_length=500)
+
+
+class FeedbackOut(OutModel):
+    id: uuid.UUID
+    feedback_type: FeedbackType
+    created_at: datetime
+    #: Vrai quand le signalement a retiré le plat des recommandations.
+    dish_put_in_review: bool = False
+
+
 __all__ = [
     "DayOut",
+    "FeedbackIn",
+    "FeedbackOut",
     "GenerateIn",
     "JobAccepted",
     "JobOut",
@@ -119,4 +168,6 @@ __all__ = [
     "PlanOut",
     "PlanPage",
     "PlanSummary",
+    "TodayOut",
+    "TrackingIn",
 ]

@@ -529,6 +529,29 @@ def _mesure_cout(depuis: datetime, debut: date, fin: date):
     return mesurer
 
 
+#: Repas réellement proposés. Un remplacement (FN-025) crée une nouvelle version
+#: du programme qui recopie tous les repas : compter les versions archivées
+#: doublerait chaque plat. On garde les repas des versions en vigueur, plus,
+#: dans les versions archivées, le seul repas remplacé — lui a bien été proposé.
+REPAS_PROPOSES = (
+    "meal_plan_meals m"
+    " JOIN meal_plan_days d ON d.id = m.day_id"
+    " JOIN meal_plans p ON p.id = d.plan_id"
+    " WHERE (p.status <> 'archived' OR m.tracked_status = 'replaced')"
+)
+
+
+def taux_acceptation(suivis: dict[str, int]) -> float | None:
+    """Repas suivis parmi ceux sur lesquels l'utilisateur s'est prononcé.
+
+    Un repas encore `pending` n'est ni accepté ni refusé : il n'entre pas au
+    dénominateur, sinon un programme tout juste généré ferait chuter le taux.
+    """
+    suivi = suivis.get("followed", 0)
+    tranches = suivi + suivis.get("skipped", 0) + suivis.get("replaced", 0)
+    return ratio(suivi, tranches)
+
+
 def _mesure_qualite(depuis: datetime):
     async def mesurer(session: AsyncSession) -> list[Indicateur]:
         retours = dict(
@@ -539,47 +562,82 @@ def _mesure_qualite(depuis: datetime):
                 depuis=depuis,
             )
         )
-        suivis = dict(
-            await _lignes(
+        suivis = {
+            str(k): v
+            for k, v in await _lignes(
                 session,
-                "SELECT m.tracked_status, count(*) FROM meal_plan_meals m"
-                " JOIN meal_plan_days d ON d.id = m.day_id"
-                " WHERE d.day_date >= :depuis_jour GROUP BY 1",
+                f"SELECT m.tracked_status, count(*) FROM {REPAS_PROPOSES}"
+                " AND d.day_date >= :depuis_jour GROUP BY 1",
                 depuis_jour=depuis.date(),
             )
-        )
-        top = await _lignes(
+        }
+        top_suivis = await _lignes(
             session,
-            "SELECT m.dish_snapshot->>'name', count(*) FROM meal_plan_meals m"
-            " WHERE m.tracked_status = 'followed' GROUP BY 1 ORDER BY 2 DESC LIMIT 5",
+            f"SELECT m.dish_snapshot->>'name', count(*) FROM {REPAS_PROPOSES}"
+            " AND m.tracked_status = 'followed' GROUP BY 1 ORDER BY 2 DESC LIMIT 5",
         )
-        acceptes, refuses = retours.get("accepted", 0), retours.get("rejected", 0)
+        top_proposes = await _lignes(
+            session,
+            f"SELECT m.dish_snapshot->>'name', count(*) FROM {REPAS_PROPOSES}"
+            " GROUP BY 1 ORDER BY 2 DESC LIMIT 5",
+        )
+        top_remplaces = await _lignes(
+            session,
+            f"SELECT m.dish_snapshot->>'name', count(*) FROM {REPAS_PROPOSES}"
+            " AND m.tracked_status = 'replaced' GROUP BY 1 ORDER BY 2 DESC LIMIT 5",
+        )
+        total = sum(suivis.values())
+        remplaces = suivis.get("replaced", 0)
+        tranches = suivis.get("followed", 0) + suivis.get("skipped", 0) + remplaces
         return [
             Indicateur(
                 "qualite.acceptation",
                 "Taux d'acceptation",
-                ratio(acceptes, acceptes + refuses),
-                OK if acceptes + refuses else INCONNU,
-                f"{acceptes} accepté(s), {refuses} refusé(s)",
+                taux_acceptation(suivis),
+                OK if tranches else INCONNU,
+                f"repas suivis / repas suivis, sautés ou remplacés — {tranches} décision(s)",
                 unite="ratio",
+                repartition=[{"libelle": k, "valeur": v} for k, v in sorted(suivis.items())],
+            ),
+            Indicateur(
+                "qualite.alternatives",
+                "Alternatives demandées",
+                ratio(remplaces, total),
+                OK if total else INCONNU,
+                f"{remplaces} « Proposer autre chose » sur {total} repas proposés",
+                unite="ratio",
+            ),
+            Indicateur(
+                "qualite.retours",
+                "Retours des utilisateurs",
+                sum(retours.values()),
+                OK if retours else INCONNU,
+                "user_meal_feedback sur la période",
                 repartition=[{"libelle": str(k), "valeur": v} for k, v in sorted(retours.items())],
             ),
             Indicateur(
-                "qualite.suivi",
-                "Repas suivis",
-                ratio(suivis.get("followed", 0), sum(suivis.values())),
-                OK if sum(suivis.values()) else INCONNU,
-                f"{sum(suivis.values())} repas planifiés sur la période",
-                unite="ratio",
-                repartition=[{"libelle": str(k), "valeur": v} for k, v in sorted(suivis.items())],
+                "qualite.top_proposes",
+                "Plats les plus proposés",
+                len(top_proposes),
+                OK if top_proposes else INCONNU,
+                "repas des programmes en vigueur (copies de versions exclues)",
+                repartition=[{"libelle": nom or "—", "valeur": n} for nom, n in top_proposes],
             ),
             Indicateur(
                 "qualite.top",
                 "Plats les plus suivis",
-                len(top),
-                OK if top else INCONNU,
+                len(top_suivis),
+                OK if top_suivis else INCONNU,
                 "meal_plan_meals.dish_snapshot, repas suivis",
-                repartition=[{"libelle": nom or "—", "valeur": n} for nom, n in top],
+                repartition=[{"libelle": nom or "—", "valeur": n} for nom, n in top_suivis],
+            ),
+            Indicateur(
+                "qualite.top_remplaces",
+                "Plats les plus remplacés",
+                len(top_remplaces),
+                OK if top_remplaces else INCONNU,
+                "repas remplacés par « Proposer autre chose »",
+                repartition=[{"libelle": nom or "—", "valeur": n} for nom, n in top_remplaces],
             ),
         ]
 
@@ -715,7 +773,7 @@ async def mesurer(session: AsyncSession, *, periode_jours: int = 7) -> dict[str,
         Bloc("catalogue", "Catalogue", "Plats, signatures d'allergènes et blocages de publication."),
         Bloc("generation", "Génération", "Programmes générés, échecs et rejets de la validation finale."),
         Bloc("cout", "Coût IA", "Appels, tokens et coût par jour."),
-        Bloc("qualite", "Qualité", "Acceptation et suivi des repas proposés."),
+        Bloc("qualite", "Qualité des recommandations", "Acceptation, alternatives demandées et plats les plus proposés, suivis et remplacés."),
         Bloc("prix", "Prix", "Couverture et fraîcheur des observations."),
         Bloc("collecte", "Collecte", "Sources, exécutions et file de revue."),
     ]
